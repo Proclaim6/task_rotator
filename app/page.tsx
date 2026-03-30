@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { Particles } from "@/components/ui/particles";
+import {ConstellationBackground} from "@/components/ui/constellation";
 import { motion, AnimatePresence } from "framer-motion";
 import { Geist } from "next/font/google"; // Import Geist
 
@@ -66,12 +66,8 @@ const completeTask = (id: string) => {
   return (
     // Apply the font variable to the main wrapper
     <main className={`relative flex min-h-screen w-full flex-col items-center justify-center overflow-hidden bg-[#050509] p-6 ${geist.variable} font-sans`}>
-      <Particles 
+      <ConstellationBackground 
         className="absolute inset-0 -z-0" 
-        quantity={200} // Increased density for a denser starfield
-        staticity={10} // Makes them drift more slowly
-        color="#f0f0f3" // Slightly warmer white
-        refresh 
       />
 
       <div className="z-10 w-full max-w-md space-y-8">
