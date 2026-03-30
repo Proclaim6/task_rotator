@@ -1,65 +1,109 @@
-import Image from "next/image";
+"use client";
 
-export default function Home() {
+import React, { useState, useEffect } from "react";
+import { Particles } from "@/components/ui/particles";
+import { motion, AnimatePresence } from "framer-motion";
+import { Geist } from "next/font/google"; // Import Geist
+
+// Configure Geist font
+const geist = Geist({
+  subsets: ["latin"],
+  variable: "--font-geist",
+});
+
+interface Task {
+  id: string;
+  text: string;
+}
+
+const DEFAULT_TASKS: Task[] = [
+  { id: "1", text: "Assignment Task" },
+  { id: "2", text: "University Study Task" },
+  { id: "3", text: "Astrophysics Study Task" },
+  { id: "4", text: "Admin Task" },
+  { id: "5", text: "Hobbie Task" },
+  { id: "6", text: "Read 10 pages" }
+];
+
+export default function InfiniteTaskPage() {
+  const [tasks, setTasks] = useState<Task[]>([]);
+  const [isLoaded, setIsLoaded] = useState(false);
+
+  useEffect(() => {
+    // Check v2 to force a reset if you changed the list above
+    const saved = localStorage.getItem("task-loop-order-v2");
+    if (saved) {
+      setTasks(JSON.parse(saved));
+    } else {
+      setTasks(DEFAULT_TASKS);
+    }
+    setIsLoaded(true);
+  }, []);
+
+  useEffect(() => {
+    if (isLoaded) {
+      localStorage.setItem("task-loop-order-v2", JSON.stringify(tasks));
+    }
+  }, [tasks, isLoaded]);
+
+  const completeTask = (id: string) => {
+    const taskToMove = tasks.find((t) => t.id === id);
+    if (!taskToMove) return;
+
+    const updatedTasks = [
+      ...tasks.filter((t) => t.id !== id),
+      { ...taskToMove, id: crypto.randomUUID() },
+    ];
+
+    setTasks(updatedTasks);
+  };
+
+  if (!isLoaded) return <div className={`min-h-screen bg-[#050509] ${geist.variable} font-sans`} />;
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
+    // Apply the font variable to the main wrapper
+    <main className={`relative flex min-h-screen w-full flex-col items-center justify-center overflow-hidden bg-[#050509] p-6 ${geist.variable} font-sans`}>
+      <Particles 
+        className="absolute inset-0 -z-0" 
+        quantity={200} // Increased density for a denser starfield
+        staticity={10} // Makes them drift more slowly
+        color="#f0f0f3" // Slightly warmer white
+        refresh 
+      />
+
+      <div className="z-10 w-full max-w-md space-y-8">
+        <header className="text-center space-y-2">
+          {/* New Branding: ORBITAL */}
+          <h1 className="text-5xl font-black tracking-tighter text-white">ORBITAL</h1>
+          <p className="text-xs text-muted-foreground uppercase tracking-[0.3em] font-medium">Infinite Academic Cycles</p>
+        </header>
+
+        <ul className="relative space-y-3">
+          <AnimatePresence mode="popLayout">
+            {tasks.map((task) => (
+              <motion.li
+                key={task.id}
+                layout
+                initial={{ opacity: 0, scale: 0.9, y: 20 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.9, y: -20 }}
+                transition={{
+                  type: "spring",
+                  stiffness: 400,
+                  damping: 25,
+                }}
+                onClick={() => completeTask(task.id)}
+                className="cursor-pointer rounded-xl border border-white/5 bg-white/5 p-5 backdrop-blur-sm transition-colors hover:bg-white/10 hover:border-white/15 active:scale-95"
+              >
+                <div className="flex items-center justify-center text-center">
+                  <span className="text-lg font-medium tracking-tight text-white/95">{task.text}</span>
+                  {/* BLUE DOT IS GONE */}
+                </div>
+              </motion.li>
+            ))}
+          </AnimatePresence>
+        </ul>
+      </div>
+    </main>
   );
 }
