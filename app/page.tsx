@@ -46,17 +46,20 @@ export default function InfiniteTaskPage() {
     }
   }, [tasks, isLoaded]);
 
-  const completeTask = (id: string) => {
-    const taskToMove = tasks.find((t) => t.id === id);
-    if (!taskToMove) return;
+const completeTask = (id: string) => {
+  const taskToMove = tasks.find((t) => t.id === id);
+  if (!taskToMove) return;
 
-    const updatedTasks = [
-      ...tasks.filter((t) => t.id !== id),
-      { ...taskToMove, id: crypto.randomUUID() },
-    ];
+  // Use a timestamp instead of crypto for the ID to avoid build errors
+  const newId = `${taskToMove.id}-${Date.now()}`;
 
-    setTasks(updatedTasks);
-  };
+  const updatedTasks = [
+    ...tasks.filter((t) => t.id !== id),
+    { ...taskToMove, id: newId },
+  ];
+
+  setTasks(updatedTasks);
+};
 
   if (!isLoaded) return <div className={`min-h-screen bg-[#050509] ${geist.variable} font-sans`} />;
 
