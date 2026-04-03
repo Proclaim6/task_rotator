@@ -19,10 +19,11 @@ interface Task {
 const DEFAULT_TASKS: Task[] = [
   { id: "1", text: "Assignment Task" },
   { id: "2", text: "University Study Task" },
-  { id: "3", text: "Astrophysics Study Task" },
-  { id: "4", text: "Admin Task" },
-  { id: "5", text: "Hobbie Task" },
-  { id: "6", text: "Read 10 pages" }
+  { id: "4", text: "Astrophysics Study Task" },
+  { id: "5", text: "Language Learning Task"},
+  { id: "6", text: "Admin Task" },
+  { id: "7", text: "Hobbie Task" },
+  { id: "8", text: "Read 10 pages" }
 ];
 
 export default function InfiniteTaskPage() {
