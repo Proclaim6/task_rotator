@@ -22,8 +22,9 @@ const DEFAULT_TASKS: Task[] = [
   { id: "3", text: "Astrophysics Study Task" },
   { id: "4", text: "Language Learning Task"},
   { id: "5", text: "Admin Task" },
-  { id: "6", text: "Hobbie Task" },
-  { id: "7", text: "Read 10 pages" }
+  { id: "6", text: "Youtube Task"},
+  { id: "7", text: "Hobbie Task" },
+  { id: "8", text: "Read 10 pages" }
 ];
 
 export default function InfiniteTaskPage() {
